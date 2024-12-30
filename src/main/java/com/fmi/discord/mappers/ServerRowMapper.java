@@ -12,7 +12,7 @@ public class ServerRowMapper implements RowMapper<Server> {
         Server server = new Server();
         server.setId(rs.getInt("id"));
         server.setName(rs.getString("name"));
-        server.setOwnerId(rs.getInt("owner_id"));
+        server.setCreatedAt(rs.getDate("created_at"));
         return server;
     }
 }

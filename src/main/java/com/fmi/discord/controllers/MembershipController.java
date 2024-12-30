@@ -1,12 +1,10 @@
 package com.fmi.discord.controllers;
 
+import com.fmi.discord.entities.Server;
 import com.fmi.discord.http.AppResponse;
 import com.fmi.discord.services.MembershipService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class MembershipController {
@@ -16,16 +14,57 @@ public class MembershipController {
         this.membershipService = membershipService;
     }
 
-    @DeleteMapping("/servers/{serverId}/members/{userId}")
-    public ResponseEntity<?> removeUserFromServer(@PathVariable int serverId, @PathVariable int userId, @RequestParam int ownerId) {
-        boolean isRemoved = this.membershipService.removeUserFromServer(serverId, ownerId, userId);
+    @PostMapping("/servers/{serverId}/memberships/{targetUserId}/add")
+    public ResponseEntity<?> addGuestUserToServer(@PathVariable int serverId, @PathVariable int targetUserId, @RequestHeader("User-Id") int userId) {
+        boolean isUserIdServerOwnerOrAdmin = this.membershipService.isUserIdServerOwnerOrAdmin(serverId, userId);
 
-        if (!isRemoved) {
+        if (!isUserIdServerOwnerOrAdmin) {
             return AppResponse.error()
-                    .withMessage("User could not be removed. Either the server does not exist, you are not the owner, or the user is not a member.")
+                    .withMessage("User is not owner or admin")
                     .build();
         }
 
-        return AppResponse.success().withMessage("User removed from the server successfully").build();
+        boolean isUpdateSuccessful = this.membershipService.addGuestUserToServer(serverId, targetUserId);
+
+        if(!isUpdateSuccessful) {
+            return AppResponse.error()
+                    .withMessage("Could not add user to server")
+                    .build();
+        }
+
+        return AppResponse.success()
+                .withMessage("User added to server successfully")
+                .build();
+    }
+
+    @PutMapping("/servers/{serverId}/memberships/{targetUserId}/promote")
+    public ResponseEntity<?> promoteUserToAdmin(@PathVariable int serverId, @PathVariable int targetUserId, @RequestHeader("User-Id") int userId) {
+        boolean isUserIdServerOwner = this.membershipService.isUserIdServerOwner(serverId, userId);
+
+        if (!isUserIdServerOwner) {
+            return AppResponse.error()
+                    .withMessage("Promoter is not server owner")
+                    .build();
+        }
+
+        boolean isUserServerMember = this.membershipService.isUserServerMember(serverId, targetUserId);
+
+        if (!isUserServerMember) {
+            return AppResponse.error()
+                    .withMessage("Target user is not part of the server")
+                    .build();
+        }
+
+        boolean isUpdateSuccessful = this.membershipService.promoteUserToAdmin(serverId, targetUserId);
+
+        if(!isUpdateSuccessful) {
+            return AppResponse.error()
+                    .withMessage("Could not promote user")
+                    .build();
+        }
+
+        return AppResponse.success()
+                .withMessage("User promotion successful")
+                .build();
     }
 }

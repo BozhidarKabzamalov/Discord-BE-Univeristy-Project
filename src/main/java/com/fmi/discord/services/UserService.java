@@ -17,13 +17,13 @@ public class UserService {
 
     public boolean createUser(User user) {
         String query = "INSERT into USERS (username, password) VALUES (?, ?)";
-        this.db.update(query.toString(), user.getUsername(), user.getPassword());
+        this.db.update(query, user.getUsername(), user.getPassword());
         return true;
     }
 
     public User getUserById(int id) {
         String query = "SELECT * FROM USERS WHERE id = ?";
-        var collection = this.db.query(query.toString(), new UserRowMapper(), id);
+        List<User> collection = this.db.query(query, new UserRowMapper(), id);
 
         if (collection.isEmpty()) {
             return null;
@@ -34,23 +34,23 @@ public class UserService {
 
     public User getUserByUsername(String username) {
         String query = "SELECT * FROM USERS WHERE username = ?";
-        var users = this.db.query(query, new UserRowMapper(), username);
+        List<User> collection = this.db.query(query, new UserRowMapper(), username);
 
-        if (users.isEmpty()) {
+        if (collection.isEmpty()) {
             return null;
         }
 
-        return users.get(0);
+        return collection.get(0);
     }
 
     public List<User> getAllUsers() {
         String query = "SELECT * FROM USERS";
-        var users = this.db.query(query, new UserRowMapper());
+        List<User> collection = this.db.query(query, new UserRowMapper());
 
-        if (users.isEmpty()) {
+        if (collection.isEmpty()) {
             return null;
         }
 
-        return users;
+        return collection;
     }
 }

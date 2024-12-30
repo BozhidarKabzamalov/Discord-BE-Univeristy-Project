@@ -1,9 +1,11 @@
 package com.fmi.discord.entities;
 
+import java.sql.Date;
+
 public class Server {
     private int id;
     private String name;
-    private int ownerId;
+    private Date createdAt;
 
     public int getId() {
         return id;
@@ -21,11 +23,11 @@ public class Server {
         this.name = name;
     }
 
-    public int getOwnerId() {
-        return ownerId;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

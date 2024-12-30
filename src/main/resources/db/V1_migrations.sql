@@ -7,8 +7,8 @@ CREATE TABLE users (
 CREATE TABLE servers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    owner_id INT NOT NULL,
-    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+    is_active BOOLEAN NOT NULL DEFAULT TRUE
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE roles (
@@ -17,10 +17,10 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE memberships (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     server_id INT NOT NULL,
     role_id INT NOT NULL,
-    PRIMARY KEY (user_id, server_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE

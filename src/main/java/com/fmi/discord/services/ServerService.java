@@ -5,6 +5,8 @@ import com.fmi.discord.mappers.ServerRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ServerService {
     private final JdbcTemplate db;
@@ -13,17 +15,23 @@ public class ServerService {
         this.db = jdbc;
     }
 
-    public boolean createServer(Server server) {
-        StringBuilder query = new StringBuilder();
-        query.append("INSERT INTO SERVERS (name, owner_id) VALUES (?, ?)");
-        this.db.update(query.toString(), server.getName(), server.getOwnerId());
+    public boolean createServer(Server server, int userId) {
+        String serverQuery = "INSERT INTO SERVERS (name) VALUES (?)";
+        this.db.update(serverQuery, server.getName());
+
+        String lastInsertedQuery = "SELECT * FROM SERVERS ORDER BY created_at DESC LIMIT 1";
+        List<Server> lastServer = this.db.query(lastInsertedQuery, new ServerRowMapper());
+        int lastServerId = lastServer.get(0).getId();
+
+        String membershipQuery = "INSERT INTO MEMBERSHIPS (user_id, server_id, role_id) VALUES (?, ?, ?)";
+        this.db.update(membershipQuery, userId, lastServerId, 2);
+
         return true;
     }
 
     public Server getServerById(int id) {
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT * FROM SERVERS WHERE id = ?");
-        var collection = this.db.query(query.toString(), new ServerRowMapper(), id);
+        String query = "SELECT * FROM SERVERS WHERE id = ?";
+        List<Server> collection = this.db.query(query, new ServerRowMapper(), id);
 
         if (collection.isEmpty()) {
             return null;
@@ -32,10 +40,17 @@ public class ServerService {
         return collection.get(0);
     }
 
-    public boolean deleteServer(int serverId, int ownerId) {
-        StringBuilder query = new StringBuilder();
-        query.append("DELETE FROM SERVERS WHERE id = ? AND owner_id = ?");
-        int rowsAffected = this.db.update(query.toString(), serverId, ownerId);
-        return rowsAffected > 0; // Return true if the server was deleted
+    public boolean deleteServer(int serverId) {
+        String query = "DELETE FROM SERVERS WHERE id = ?";
+        this.db.update(query, serverId);
+
+        return true;
+    }
+
+    public boolean updateServer(int serverId, Server server) {
+        String query = "UPDATE SERVERS SET name = ? WHERE is_active = TRUE AND id = ?";
+        this.db.update(query, server.getName(), serverId);
+
+        return true;
     }
 }

@@ -6,7 +6,7 @@ import com.fmi.discord.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
-        ArrayList<User> collection = (ArrayList<User>) this.userService.getAllUsers();
+        List<User> collection = this.userService.getAllUsers();
 
         return AppResponse.success().withData(collection).build();
     }
