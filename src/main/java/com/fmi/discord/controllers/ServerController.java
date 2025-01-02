@@ -7,6 +7,8 @@ import com.fmi.discord.services.ServerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ServerController {
     private final ServerService serverService;
@@ -24,6 +26,17 @@ public class ServerController {
         }
 
         return AppResponse.error().withMessage("Server could not be created").build();
+    }
+
+    @GetMapping("/servers")
+    public ResponseEntity<?> getAllServersByUserId(@RequestHeader("User-Id") int userId) {
+        List<Server> serverResult = this.serverService.getAllServersByUserId(userId);
+
+        if (serverResult == null) {
+            return AppResponse.error().withMessage("Server data not found").build();
+        }
+
+        return AppResponse.success().withData(serverResult).build();
     }
 
     @GetMapping("/servers/{serverId}")

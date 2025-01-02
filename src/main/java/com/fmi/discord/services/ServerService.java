@@ -53,4 +53,16 @@ public class ServerService {
 
         return true;
     }
+
+    public List<Server> getAllServersByUserId(int userId) {
+        String query = "SELECT servers.id, servers.name, servers.is_active, servers.created_at FROM memberships JOIN servers ON memberships.server_id = servers.id WHERE memberships.user_id = ? AND servers.is_active = TRUE;";
+
+        List<Server> collection = this.db.query(query, new ServerRowMapper(), userId);
+
+        if (collection.isEmpty()) {
+            return null;
+        }
+
+        return collection;
+    }
 }
