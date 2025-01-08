@@ -1,9 +1,12 @@
 package com.fmi.discord.entities;
 
+import java.sql.Date;
+
 public class Friendship {
     private int id;
     private int userId;
     private int friendId;
+    private Date createdAt;
 
     public int getId() {
         return id;
@@ -27,5 +30,13 @@ public class Friendship {
 
     public void setFriendId(int friendId) {
         this.friendId = friendId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }
