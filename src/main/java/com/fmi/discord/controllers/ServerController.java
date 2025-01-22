@@ -21,11 +21,13 @@ public class ServerController {
 
     @PostMapping("/servers")
     public ResponseEntity<?> createServer(@RequestBody Server server, @RequestHeader("User-Id") int userId) {
-        if (this.serverService.createServer(server, userId)) {
-            return AppResponse.success().withMessage("Server created successfully").build();
+        Server serverResult = this.serverService.createServer(server, userId);
+
+        if (serverResult == null) {
+            return AppResponse.error().withMessage("Server could not be created").build();
         }
 
-        return AppResponse.error().withMessage("Server could not be created").build();
+        return AppResponse.success().withMessage("Server created successfully").withData(serverResult).build();
     }
 
     @GetMapping("/servers")

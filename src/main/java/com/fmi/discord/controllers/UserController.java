@@ -44,4 +44,16 @@ public class UserController {
 
         return AppResponse.success().withData(userResult).build();
     }
+
+    @GetMapping("/users/username/{username}")
+    public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
+        User userResult = this.userService.getUserByUsername(username);
+
+        if (userResult == null) {
+            return AppResponse.error().withMessage("User data not found").build();
+        }
+
+        return AppResponse.success().withData(userResult).build();
+    }
+
 }

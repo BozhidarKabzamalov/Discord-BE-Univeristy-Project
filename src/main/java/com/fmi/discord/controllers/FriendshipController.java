@@ -32,12 +32,12 @@ public class FriendshipController {
             return AppResponse.error().withMessage("User is already a friend").build();
         }
 
-        boolean success = friendshipService.addFriend(userId, friendship.getFriendId());
+        Friend lastFriend = friendshipService.addFriend(userId, friendship.getFriendId());
 
-        if (success) {
-            return AppResponse.success().withMessage("Friend added successfully").build();
+        if (lastFriend == null) {
+            return AppResponse.error().withMessage("Failed to add friend").build();
         }
 
-        return AppResponse.error().withMessage("Failed to add friend").build();
+        return AppResponse.success().withMessage("Friend added successfully").withData(lastFriend).build();
     };
 }

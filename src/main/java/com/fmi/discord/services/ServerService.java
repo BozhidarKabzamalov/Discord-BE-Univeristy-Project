@@ -15,7 +15,7 @@ public class ServerService {
         this.db = jdbc;
     }
 
-    public boolean createServer(Server server, int userId) {
+    public Server createServer(Server server, int userId) {
         String serverQuery = "INSERT INTO SERVERS (name) VALUES (?)";
         this.db.update(serverQuery, server.getName());
 
@@ -26,11 +26,15 @@ public class ServerService {
         String membershipQuery = "INSERT INTO MEMBERSHIPS (user_id, server_id, role_id) VALUES (?, ?, ?)";
         this.db.update(membershipQuery, userId, lastServerId, 2);
 
-        return true;
+        if (lastServer.isEmpty()) {
+            return null;
+        }
+
+        return lastServer.get(0);
     }
 
     public Server getServerById(int id) {
-        String query = "SELECT * FROM SERVERS WHERE id = ?";
+        String query = "SELECT * FROM SERVERS WHERE id = ? AND is_active = true";
         List<Server> collection = this.db.query(query, new ServerRowMapper(), id);
 
         if (collection.isEmpty()) {
@@ -41,7 +45,7 @@ public class ServerService {
     }
 
     public boolean deleteServer(int serverId) {
-        String query = "DELETE FROM SERVERS WHERE id = ?";
+        String query = "UPDATE SERVERS SET is_active = false WHERE id = ?";
         this.db.update(query, serverId);
 
         return true;

@@ -17,10 +17,18 @@ public class FriendshipService {
         this.db = jdbc;
     }
 
-    public boolean addFriend(int userId, int friendId) {
+    public Friend addFriend(int userId, int friendId) {
         String query = "INSERT INTO FRIENDSHIPS (user_id, friend_id) VALUES (?, ?);";
         this.db.update(query, userId, friendId);
-        return true;
+
+        String lastInsertedQuery = "SELECT u.id AS friend_id, u.username AS friend_username FROM users u JOIN friendships f ON u.id = f.friend_id WHERE f.user_id = ? ORDER BY created_at DESC LIMIT 1";
+        List<Friend> lastFriend = this.db.query(lastInsertedQuery, new FriendRowMapper(), userId);
+
+        if (lastFriend.isEmpty()) {
+            return null;
+        }
+
+        return lastFriend.get(0);
     }
 
     public boolean isUserAlreadyFriend(int userId, int friendId) {
