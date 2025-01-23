@@ -1,6 +1,8 @@
 package com.fmi.discord.services;
 
+import com.fmi.discord.entities.Member;
 import com.fmi.discord.entities.Server;
+import com.fmi.discord.mappers.MemberRowMapper;
 import com.fmi.discord.mappers.ServerRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -62,6 +64,18 @@ public class ServerService {
         String query = "SELECT servers.id, servers.name, servers.is_active, servers.created_at FROM memberships JOIN servers ON memberships.server_id = servers.id WHERE memberships.user_id = ? AND servers.is_active = TRUE;";
 
         List<Server> collection = this.db.query(query, new ServerRowMapper(), userId);
+
+        if (collection.isEmpty()) {
+            return null;
+        }
+
+        return collection;
+    }
+
+    public List<Member> getAllServerMembers(int serverId) {
+        String query = "SELECT u.id AS user_id, u.username, r.name AS role FROM memberships m JOIN users u ON m.user_id = u.id JOIN roles r ON m.role_id = r.id WHERE m.server_id = ?";
+
+        List<Member> collection = this.db.query(query, new MemberRowMapper(), serverId);
 
         if (collection.isEmpty()) {
             return null;

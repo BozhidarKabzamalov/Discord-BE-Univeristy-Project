@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"username10\",\n    \"password\": \"password10\"\n}",
+							"raw": "{\n    \"username\": \"username20\",\n    \"password\": \"password20\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -69,6 +69,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get User By Username",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Id",
+								"value": "2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/users/username/username",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users",
+								"username",
+								"username"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -88,7 +113,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Server 300\"\n}",
+							"raw": "{\n    \"name\": \"Server 500\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -176,15 +201,15 @@
 							}
 						],
 						"url": {
-							"raw": "{{URL}}/servers/19/memberships/4/promote",
+							"raw": "{{URL}}/servers/27/memberships/11/promote",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"servers",
-								"19",
+								"27",
 								"memberships",
-								"4",
+								"11",
 								"promote"
 							]
 						}
@@ -240,6 +265,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get All Members For Server",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "User-Id",
+								"value": "2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/servers/19/members",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"servers",
+								"19",
+								"members"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -291,7 +341,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"content\": \"Latest Message\",\r\n    \"senderId\": 2,\r\n    \"serverId\": 19\r\n}",
+							"raw": "{\r\n    \"content\": \"hah\",\r\n    \"senderId\": 2,\r\n    \"serverId\": 19\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -379,7 +429,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": 2,\r\n    \"friendId\": 7\r\n}",
+							"raw": "{\r\n    \"userId\": 2,\r\n    \"friendId\": 14\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -48,6 +48,10 @@ public class MessageController {
 
         ServerMessageDTO message = this.messageService.createServerMessage(serverMessage, userId);
 
+        if (message == null) {
+            return AppResponse.error().withMessage("Server message could not be created").build();
+        }
+
         return AppResponse.success().withMessage("Server message created successfully").withData(message).build();
     }
 
@@ -61,12 +65,12 @@ public class MessageController {
                     .build();
         }
 
-        boolean isMessageCreatedSuccessfully = this.messageService.createFiendMessage(friendMessage, userId);
+        FriendMessageDTO message = this.messageService.createFriendMessage(friendMessage, userId);
 
-        if (!isMessageCreatedSuccessfully) {
+        if (message == null) {
             return AppResponse.error().withMessage("Friend message could not be created").build();
         }
 
-        return AppResponse.success().withMessage("Friend message created successfully").build();
+        return AppResponse.success().withMessage("Friend message created successfully").withData(message).build();
     }
 }

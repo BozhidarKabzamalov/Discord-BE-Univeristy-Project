@@ -1,5 +1,6 @@
 package com.fmi.discord.controllers;
 
+import com.fmi.discord.entities.Member;
 import com.fmi.discord.entities.Server;
 import com.fmi.discord.http.AppResponse;
 import com.fmi.discord.services.MembershipService;
@@ -50,6 +51,17 @@ public class ServerController {
         }
 
         return AppResponse.success().withData(serverResult).build();
+    }
+
+    @GetMapping("/servers/{serverId}/members")
+    public ResponseEntity<?> getAllServerMembers(@PathVariable int serverId) {
+        List<Member> members = this.serverService.getAllServerMembers(serverId);
+
+        if (members == null) {
+            return AppResponse.error().withMessage("Server data not found").build();
+        }
+
+        return AppResponse.success().withData(members).build();
     }
 
     @DeleteMapping("/servers/{serverId}")
