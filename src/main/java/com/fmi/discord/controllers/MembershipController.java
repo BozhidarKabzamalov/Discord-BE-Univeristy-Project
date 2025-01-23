@@ -37,6 +37,29 @@ public class MembershipController {
                 .build();
     }
 
+    @DeleteMapping("/servers/{serverId}/memberships/{targetUserId}/remove")
+    public ResponseEntity<?> removerUserFromServer(@PathVariable int serverId, @PathVariable int targetUserId, @RequestHeader("User-Id") int userId) {
+        boolean isUserIdServerOwnerOrAdmin = this.membershipService.isUserIdServerOwnerOrAdmin(serverId, userId);
+
+        if (!isUserIdServerOwnerOrAdmin) {
+            return AppResponse.error()
+                    .withMessage("User is not owner or admin")
+                    .build();
+        }
+
+        boolean isUpdateSuccessful = this.membershipService.removeUserFromServer(serverId, targetUserId);
+
+        if(!isUpdateSuccessful) {
+            return AppResponse.error()
+                    .withMessage("Could not remove user from server")
+                    .build();
+        }
+
+        return AppResponse.success()
+                .withMessage("User removed from server successfully")
+                .build();
+    }
+
     @PutMapping("/servers/{serverId}/memberships/{targetUserId}/promote")
     public ResponseEntity<?> promoteUserToAdmin(@PathVariable int serverId, @PathVariable int targetUserId, @RequestHeader("User-Id") int userId) {
         boolean isUserIdServerOwner = this.membershipService.isUserIdServerOwner(serverId, userId);

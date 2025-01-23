@@ -35,10 +35,6 @@ public class ServerController {
     public ResponseEntity<?> getAllServersByUserId(@RequestHeader("User-Id") int userId) {
         List<Server> serverResult = this.serverService.getAllServersByUserId(userId);
 
-        if (serverResult == null) {
-            return AppResponse.error().withMessage("Server data not found").build();
-        }
-
         return AppResponse.success().withData(serverResult).build();
     }
 

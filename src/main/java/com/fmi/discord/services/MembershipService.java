@@ -49,4 +49,11 @@ public class MembershipService {
 
         return true;
     }
+
+    public boolean removeUserFromServer(int serverId, int userId) {
+        String query = "DELETE FROM MEMBERSHIPS WHERE user_id = ? AND server_id = ?";
+        this.db.update(query, userId, serverId);
+
+        return true;
+    }
 }
